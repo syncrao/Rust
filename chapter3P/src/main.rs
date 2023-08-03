@@ -2,7 +2,7 @@ extern crate rand;
 use rand::Rng;
 use std::cmp::Ordering;
 fn main() {
-    println!("This is my First Project in Rust after Complete chapter 3");
+    println!("This is my First Program in Rust after Complete chapter 3");
     name_age();
 }
 
