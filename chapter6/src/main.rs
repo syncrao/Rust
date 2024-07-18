@@ -1,10 +1,14 @@
 fn main() {
     println!("chapter 6 Enum");
     let white = Message::White(String::from("White"));
-    white.call();
+    match white.call() {
+        MessageReturn::Name(name) => println!("name : {}", name),
+        _ => (),
+    }
     let mov = Message::Move { x: 6, y: 4 };
-    if let Some(total) = mov.call() {
-        println!("Total move value: {}", total);
+    match mov.call() {
+        MessageReturn::Total(total) => println!("Total move value: {}", total),
+        _ => (),
     }
     let rbg = Message::ChangeColor(123, 133, 333);
     rbg.call();
@@ -20,24 +24,32 @@ enum Message {
     ChangeColor(i32, i32, i32),
 }
 
+#[derive(Debug)]
+enum MessageReturn {
+    None,
+    Total(i32),
+    Name(String),
+}
+
 impl Message {
-    fn call(&self) -> Option<i32> {
+    fn call(&self) -> MessageReturn {
         match self {
             Message::Quit => {
                 println!("Quit");
-                None
+                MessageReturn::None
             },
             Message::Move { x, y } => {
                 let total = x + y;
-                Some(total)
+                MessageReturn::Total(total)
             },
             Message::White(value) => {
                 println!("white : {}", value);
-                None
+                let name = "shah rukh".to_string();
+                MessageReturn::Name(name)
             },
             Message::ChangeColor(r, g, b) => {
                 println!("Change color to rgb({}, {}, {})", r, g, b);
-                None
+                MessageReturn::None
             },
         }
     }
