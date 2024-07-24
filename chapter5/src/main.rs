@@ -10,7 +10,7 @@ fn main() {
     println!("username {} email {}", user1.username, user1.email);
     println!("active {}, count {}", user1.active, user1.sign_in_count);
 
-    let mut user2 = User {
+    let user2 = User {
         username: String::from("shah_rukh_rao"),
         ..user1
     };
@@ -45,6 +45,15 @@ fn main() {
         rect1.area()
     );
     println!("The area of the rectangle is {:#?} square pixels.", rect1);
+
+    let number1 = Number {
+        phone: 9996660000,
+        name: String::from("shah rukh"),
+        age: 28,
+        user: user2
+    };
+    println!("User Info name : {} , Number : {}, Email : {} addNumber {}", number1.namefn(), number1.phone, number1.user.email, number1.addNumber(99))
+    
 }
 
 #[derive(Debug)]
@@ -77,3 +86,23 @@ struct User {
     sign_in_count: u64,
     active: bool,
 }
+
+
+struct Number {
+    phone: u64,
+    name: String,
+    age: u32,
+    user: User
+}
+
+impl Number {
+    fn namefn(&self) -> u64 {
+        self.phone 
+    }
+
+    fn addNumber(&self , number: u64) -> u64 {
+        self.phone + number
+    }
+}
+
+
