@@ -1,0 +1,2 @@
+Query line (1) : Are you nobody, too?
+Query line (2) : How dreary to be somebody!
