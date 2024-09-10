@@ -33,12 +33,20 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-        let query = args[1].clone();
-        let filename = args[2].clone();
+    pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
+
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("not enough arguments "),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("not enough arguments "),
+        };
+
         let case_sensitive = env::var("CASE_SENSITIVE").is_err();
 
         Ok(Config {query: query, filename: filename, case_sensitive: case_sensitive})
