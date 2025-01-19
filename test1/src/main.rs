@@ -1,11 +1,17 @@
-fn main() {
-    let s = String::from("hello");
-    let mut s1 = s;
-    print_world(&mut s1);
-    println!("{s1}")
-}
 
-fn print_world( word:  &mut String) {
-    word.push_str(" World");
-    println!("{word}");
+fn main(){
+
+    let x: u32 = 2;
+    let y: u32 = 2;
+
+    match x {
+       y => println!("yes")
+       `y => println!("No")
+    };
+    let z  = x.cmp(&y);
+    match x {
+        y => println!("yes")
+        `z => println!("No")
+     };
+    println!("{:?}", z)
 }
