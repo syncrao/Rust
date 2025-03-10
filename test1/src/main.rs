@@ -1,8 +1,7 @@
-use std::thread;
 fn main() {
-let list = vec![1, 2, 3];
-println!("Before defining closure: {list:?}");
-thread::spawn(|| println!("From thread: {list:?}"))
-.join()
-.unwrap();
+    let itr = vec![1, 3, 6];
+
+    for i in itr.iter() {
+        println!("{i}");
+    }
 }
