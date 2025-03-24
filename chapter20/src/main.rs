@@ -1,18 +1,27 @@
 use std::{
     fs,
     net::{TcpListener, TcpStream},
-    io::{prelude::*, BufReader}
+    io::{prelude::*, BufReader},
+    thread,
+    time::Duration,
 };
+
+use chapter20::*;
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let pool = ThreadPool::new(4);
     
-    for stream in listener.incoming() {
+    for stream in listener.incoming().take(10) {
         let stream = stream.unwrap();
         
-        handle_connection(stream);
+        pool.execute(||{
+            handle_connection(stream);
+        });
+        
 
     }
+    println!("Shutting down.");
 }
 
 fn handle_connection(mut stream: TcpStream) {
@@ -20,22 +29,26 @@ fn handle_connection(mut stream: TcpStream) {
     let request_line = buf_reader.lines().next().unwrap().unwrap();
     println!("{request_line:?}");
 
-    if request_line == "GET / HTTP/1.1" {
-        let status_line = "HTTP/1.1 200 OK";
-        let contents = fs::read_to_string("hello.html").unwrap();
-        let length = contents.len();
+    let (status_line, contents) = match &request_line[..] {
+        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "hello.html"),
+        "GET /sleep HTTP/1.1" => { 
+            thread::sleep(Duration::from_secs(5)); 
+            ("HTTP/1.1 200 OK", "hello.html")
+            }
+        _=> ("HTTP/1.1 404 NOT FOUND", "404.html"),
     
-        let response = format!(
-            "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
-            );
-        stream.write_all(response.as_bytes()).unwrap();
-    } else {
-        let status_line = "HTTP/1.1 404 NOT FOUND";
-        let contents = fs::read_to_string("404.html").unwrap();
-        let length = contents.len();
+    };
 
-        let response = format!("{status_line}\r\nContent_Length: {length}\r\n\r\n{contents}");
+    let contents = fs::read_to_string(contents).unwrap();
+    let length = contents.len();
 
-        stream.write_all(response.as_bytes()).unwrap();
-    }
+    let response = format!(
+        "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
+        );
+    stream.write_all(response.as_bytes()).unwrap();
+    
 }
+
+
+
+
